@@ -53,6 +53,15 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Pause"",
+                    ""type"": ""Button"",
+                    ""id"": ""dd83743d-9bc8-423f-8f9a-9e6789fc5ce0"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -165,6 +174,28 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9e7e6c7e-beaa-4688-a0a6-c70a80641168"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bacab41f-ba0b-41e2-92ad-d8bdf6c0735a"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -176,6 +207,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         m_ActionMap_Jump = m_ActionMap.FindAction("Jump", throwIfNotFound: true);
         m_ActionMap_Move = m_ActionMap.FindAction("Move", throwIfNotFound: true);
         m_ActionMap_Grapple = m_ActionMap.FindAction("Grapple", throwIfNotFound: true);
+        m_ActionMap_Pause = m_ActionMap.FindAction("Pause", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -238,6 +270,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
     private readonly InputAction m_ActionMap_Jump;
     private readonly InputAction m_ActionMap_Move;
     private readonly InputAction m_ActionMap_Grapple;
+    private readonly InputAction m_ActionMap_Pause;
     public struct ActionMapActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -245,6 +278,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         public InputAction @Jump => m_Wrapper.m_ActionMap_Jump;
         public InputAction @Move => m_Wrapper.m_ActionMap_Move;
         public InputAction @Grapple => m_Wrapper.m_ActionMap_Grapple;
+        public InputAction @Pause => m_Wrapper.m_ActionMap_Pause;
         public InputActionMap Get() { return m_Wrapper.m_ActionMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -263,6 +297,9 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @Grapple.started -= m_Wrapper.m_ActionMapActionsCallbackInterface.OnGrapple;
                 @Grapple.performed -= m_Wrapper.m_ActionMapActionsCallbackInterface.OnGrapple;
                 @Grapple.canceled -= m_Wrapper.m_ActionMapActionsCallbackInterface.OnGrapple;
+                @Pause.started -= m_Wrapper.m_ActionMapActionsCallbackInterface.OnPause;
+                @Pause.performed -= m_Wrapper.m_ActionMapActionsCallbackInterface.OnPause;
+                @Pause.canceled -= m_Wrapper.m_ActionMapActionsCallbackInterface.OnPause;
             }
             m_Wrapper.m_ActionMapActionsCallbackInterface = instance;
             if (instance != null)
@@ -276,6 +313,9 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @Grapple.started += instance.OnGrapple;
                 @Grapple.performed += instance.OnGrapple;
                 @Grapple.canceled += instance.OnGrapple;
+                @Pause.started += instance.OnPause;
+                @Pause.performed += instance.OnPause;
+                @Pause.canceled += instance.OnPause;
             }
         }
     }
@@ -285,5 +325,6 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnMove(InputAction.CallbackContext context);
         void OnGrapple(InputAction.CallbackContext context);
+        void OnPause(InputAction.CallbackContext context);
     }
 }
