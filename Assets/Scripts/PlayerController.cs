@@ -42,9 +42,9 @@ public class PlayerController : MonoBehaviour
     /*
     public float knockbackLength, knockbackForce, knockBackCounter;
 
-    public float bounceForce;
+    public float bounceForce;*/
 
-    public bool stopControl;*/
+    public bool stopControl;
 
     private void Awake()
     {
@@ -69,106 +69,110 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        //if (!PauseMenu.instance.paused && !stopControl)
-        //{
-        //    if (knockBackCounter <= 0)
-        //    {
-        //if (isGrounded)
-        //{
-        //    theRB.velocity = new Vector2(moveSpeed * Input.GetAxis("Horizontal"), theRB.velocity.y);
-        //}
-
-        if (Mathf.Abs(theRB.velocity.x) < topSpeed)
+        if (!PauseMenu.instance.paused && !stopControl)
         {
-            theRB.AddForce(Vector2.right * playerInputActions.ActionMap.Move.ReadValue<float>() * moveSpeed); //Input.GetAxisRaw("Horizontal")
-        }
+            //    if (knockBackCounter <= 0)
+            //    {
+            //if (isGrounded)
+            //{
+            //    theRB.velocity = new Vector2(moveSpeed * Input.GetAxis("Horizontal"), theRB.velocity.y);
+            //}
 
-        isGrounded = Physics2D.OverlapCircle(groundCheckPoint.position, 0.3f, whatIsGround);
-        isWalledL = Physics2D.OverlapCircle(wallCheckPointL.position, 0.2f, whatIsGround);
-        isWalledR = Physics2D.OverlapCircle(wallCheckPointR.position, 0.2f, whatIsGround);
+            if (Mathf.Abs(theRB.velocity.x) < topSpeed)
+            {
+                theRB.AddForce(Vector2.right * playerInputActions.ActionMap.Move.ReadValue<float>() * moveSpeed); //Input.GetAxisRaw("Horizontal")
+            }
 
-        if (!isGrounded && previousIsGrounded)
-        {
-            StartCoroutine(CoyoteJump());
-        }
-        else
-        {
-            previousIsGrounded = isGrounded;
-        }
+            isGrounded = Physics2D.OverlapCircle(groundCheckPoint.position, 0.3f, whatIsGround);
+            isWalledL = Physics2D.OverlapCircle(wallCheckPointL.position, 0.2f, whatIsGround);
+            isWalledR = Physics2D.OverlapCircle(wallCheckPointR.position, 0.2f, whatIsGround);
 
-        if (playerInputActions.ActionMap.Move.ReadValue<float>() != Mathf.Sign(theRB.velocity.x)) //Input.GetAxisRaw("Horizontal")
-        {
-            theRB.velocity = new Vector2(Mathf.MoveTowards(theRB.velocity.x, 0, deceleration), theRB.velocity.y);
-        }
+            if (!isGrounded && previousIsGrounded)
+            {
+                StartCoroutine(CoyoteJump());
+            }
+            else
+            {
+                previousIsGrounded = isGrounded;
+            }
 
-        if (theRB.velocity.x < 0)
-        {
-            theSR.flipX = true;
-        }
-        else if (theRB.velocity.x > 0)
-        {
-            theSR.flipX = false;
-        }
+            if (playerInputActions.ActionMap.Move.ReadValue<float>() != Mathf.Sign(theRB.velocity.x)) //Input.GetAxisRaw("Horizontal")
+            {
+                theRB.velocity = new Vector2(Mathf.MoveTowards(theRB.velocity.x, 0, deceleration), theRB.velocity.y);
+            }
 
-        if (playerInputActions.ActionMap.Jump.WasPressedThisFrame() //Input.GetButtonDown("Jump"))
-        ){
-            if (previousIsGrounded)
+            if (theRB.velocity.x < 0)
+            {
+                theSR.flipX = true;
+            }
+            else if (theRB.velocity.x > 0)
+            {
+                theSR.flipX = false;
+            }
+
+            if (playerInputActions.ActionMap.Jump.WasPressedThisFrame() //Input.GetButtonDown("Jump"))
+            )
+            {
+                if (previousIsGrounded)
+                {
+                    theRB.velocity = new Vector2(theRB.velocity.x, jumpForce);
+                    jumpCounter = jumpLength;
+                    if (playerInputActions.ActionMap.Move.ReadValue<float>() == -Mathf.Sign(theRB.velocity.x))
+                    {
+                        theRB.AddForce(Vector2.right * Mathf.Sign(theRB.velocity.x) * jumpForce * hopForce);
+                    }
+                }
+                else if (isWalledL)
+                {
+                    theRB.velocity = new Vector2(jumpForce - previousVelocityX, jumpForce);
+                    jumpCounter = jumpLength;
+                }
+                else if (isWalledR)
+                {
+                    theRB.velocity = new Vector2(-jumpForce - previousVelocityX, jumpForce);
+                    jumpCounter = jumpLength;
+                }
+                AudioManager.instance.PlaySFX("Player Jump");
+            }
+            if (playerInputActions.ActionMap.Jump.IsPressed() && !isGrounded && jumpCounter > 0 //Input.GetButton("Jump"))
+            )
             {
                 theRB.velocity = new Vector2(theRB.velocity.x, jumpForce);
-                jumpCounter = jumpLength;
-                if (playerInputActions.ActionMap.Move.ReadValue<float>() == -Mathf.Sign(theRB.velocity.x))
-                {
-                    theRB.AddForce(Vector2.right * Mathf.Sign(theRB.velocity.x) * jumpForce * hopForce);
-                }
+                jumpCounter -= Time.deltaTime;
             }
-            else if (isWalledL)
+            if (playerInputActions.ActionMap.Jump.WasReleasedThisFrame() //Input.GetButtonUp("Jump"))
+            )
             {
-                theRB.velocity = new Vector2(jumpForce - previousVelocityX, jumpForce);
-                jumpCounter = jumpLength;
+                jumpCounter = 0;
             }
-            else if (isWalledR)
+
+            if (Mathf.Abs(theRB.velocity.x) < 0.1f)
             {
-                theRB.velocity = new Vector2(-jumpForce - previousVelocityX, jumpForce);
-                jumpCounter = jumpLength;
+                StartCoroutine(CoyoteWallJump());
             }
-            //AudioManager.instance.PlaySFX("Player Jump");
-        }
-        if (playerInputActions.ActionMap.Jump.IsPressed() && !isGrounded && jumpCounter > 0 //Input.GetButton("Jump"))
-        ){
-            theRB.velocity = new Vector2(theRB.velocity.x, jumpForce);
-            jumpCounter -= Time.deltaTime;
-        }
-        if (playerInputActions.ActionMap.Jump.WasReleasedThisFrame() //Input.GetButtonUp("Jump"))
-        ){
-            jumpCounter = 0;
-        }
+            else
+            {
+                previousVelocityX = theRB.velocity.x;
+            }
 
-        if (Mathf.Abs(theRB.velocity.x) < 0.1f)
-        {
-            StartCoroutine(CoyoteWallJump());
-        }
-        else
-        {
-            previousVelocityX = theRB.velocity.x;
-        }
+            //    }
+            //    else
+            //    {
+            //        knockBackCounter -= Time.deltaTime;
+            //        if (theSR.flipX)
+            //        {
+            //            theRB.velocity = new Vector2(knockbackForce, theRB.velocity.y);
+            //        }
+            //        else
+            //        {
+            //            theRB.velocity = new Vector2(-knockbackForce, theRB.velocity.y);
+            //        }
+            //    }
+            // }
 
-        //    }
-        //    else
-        //    {
-        //        knockBackCounter -= Time.deltaTime;
-        //        if (theSR.flipX)
-        //        {
-        //            theRB.velocity = new Vector2(knockbackForce, theRB.velocity.y);
-        //        }
-        //        else
-        //        {
-        //            theRB.velocity = new Vector2(-knockbackForce, theRB.velocity.y);
-        //        }
-        //    }
-       // }
-
-       anim.SetBool("isGrounded", isGrounded);
-       anim.SetFloat("moveSpeed", Mathf.Abs(theRB.velocity.x));
+            anim.SetBool("isGrounded", isGrounded);
+            anim.SetFloat("moveSpeed", Mathf.Abs(theRB.velocity.x));
+        }
     }
 
     private IEnumerator CoyoteJump()

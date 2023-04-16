@@ -2,10 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FallOffLedge : MonoBehaviour
+public class LevelEnd : MonoBehaviour
 {
-    //public float worldBottom;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -15,17 +13,15 @@ public class FallOffLedge : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        /*if (transform.position.y < worldBottom)
-        {
-            LevelManager.instance.RespawnPlayer();
-        }*/
+        
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
         {
-            LevelManager.instance.RespawnPlayer();
+            Debug.Log("alo");
+            LevelManager.instance.EndLevel();
         }
     }
 }

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class DamagePlayer : MonoBehaviour
 {
+    public GameObject deathEffect;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -21,7 +23,17 @@ public class DamagePlayer : MonoBehaviour
         if (other.tag == "Player")
         {
             //PlayerHealthController.instance.DealDamage();
-            LevelManager.instance.RespawnPlayer();
+            //LevelManager.instance.RespawnPlayer();
+            PlayerController.instance.anim.SetTrigger("getHurt");
+            AudioManager.instance.PlaySFX("Player Death");
+            Instantiate(deathEffect, PlayerController.instance.transform.position, deathEffect.transform.rotation);
+            StartCoroutine(KillPlayer());
         }
+    }
+
+    private IEnumerator KillPlayer()
+    {
+        yield return new WaitForSeconds(0.3f);
+        LevelManager.instance.RespawnPlayer();
     }
 }

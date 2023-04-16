@@ -9,9 +9,9 @@ public class LevelManager : MonoBehaviour
 
     public float timeToRespawn;
 
-    //public int gemsCollected;
+    public int gemsCollected;
 
-    //public string sceneToLoad;
+    public string sceneToLoad;
 
     private void Awake()
     {
@@ -59,7 +59,7 @@ public class LevelManager : MonoBehaviour
         //UIController.instance.UpdateHealthDisplay();
     }
 
-    /*public void EndLevel()
+    public void EndLevel()
     {
         StartCoroutine(EndLevelCo());
     }
@@ -77,5 +77,5 @@ public class LevelManager : MonoBehaviour
         yield return new WaitForSeconds(1 / UIController.instance.fadeSpeed + 0.3f);
 
         SceneManager.LoadScene(sceneToLoad);
-    }*/
+    }
 }

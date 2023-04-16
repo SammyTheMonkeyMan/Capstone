@@ -23,8 +23,11 @@ public class Bouncer : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            PlayerController.instance.theRB.velocity = new Vector2(PlayerController.instance.theRB.velocity.x, bounce);
+            // PlayerController.instance.theRB.velocity = new Vector2(PlayerController.instance.theRB.velocity.x, bounce);
+            PlayerController.instance.theRB.velocity = new Vector2(PlayerController.instance.theRB.velocity.x, 0);
+            PlayerController.instance.theRB.AddForce(transform.up * bounce + Vector3.up * bounce / 5, ForceMode2D.Impulse);
             anim.SetTrigger("Bounce");
+            AudioManager.instance.PlaySFX("Player Jump");
         }
     }
 }

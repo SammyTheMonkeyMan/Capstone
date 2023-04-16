@@ -18,7 +18,7 @@ public class CameraController : MonoBehaviour
 
     //public float minHeight, maxHeight;
 
-    //public bool stopFollow;
+    public bool stopFollow;
 
     private void Awake()
     {
@@ -34,35 +34,35 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
-        //if (!stopFollow)
-        //{
-        //transform.position = new Vector3(target.position.x, Mathf.Clamp(target.position.y, minHeight, maxHeight), transform.position.z);
-
-        //transform.position = new Vector3(target.position.x, target.position.y, transform.position.z);
-        if (PlayerController.instance.theSR.flipX)
+        if (!stopFollow)
         {
-            direction = -1;
-        }
-        else
-        {
-            direction = 1;
-        }
-        transform.position = new Vector3(Mathf.MoveTowards(transform.position.x, target.position.x + lookAhead * direction, dampen + Mathf.Abs(PlayerController.instance.theRB.velocity.x) / 50), target.position.y + yOffset, transform.position.z);
-        Vector3 amountToMove = transform.position - lastPos;
+            //transform.position = new Vector3(target.position.x, Mathf.Clamp(target.position.y, minHeight, maxHeight), transform.position.z);
 
-        farBackGround.position += amountToMove;
-        middleBackGround.position += amountToMove * 0.5f;
+            //transform.position = new Vector3(target.position.x, target.position.y, transform.position.z);
+            if (PlayerController.instance.theSR.flipX)
+            {
+                direction = -1;
+            }
+            else
+            {
+                direction = 1;
+            }
+            transform.position = new Vector3(Mathf.MoveTowards(transform.position.x, target.position.x + lookAhead * direction, dampen + Mathf.Abs(PlayerController.instance.theRB.velocity.x) / 50), target.position.y + yOffset, transform.position.z);
+            Vector3 amountToMove = transform.position - lastPos;
 
-        if (middleBackGround.position.x < transform.position.x - 11)
-        {
-            middleBackGround.position += Vector3.right * 11;
-        }
-        else if (middleBackGround.position.x > transform.position.x + 11)
-        {
-            middleBackGround.position += Vector3.right * -11;
-        }
+            farBackGround.position += amountToMove;
+            middleBackGround.position += amountToMove * 0.5f;
 
-        lastPos = transform.position;
-        //}
+            if (middleBackGround.position.x < transform.position.x - 11)
+            {
+                middleBackGround.position += Vector3.right * 11;
+            }
+            else if (middleBackGround.position.x > transform.position.x + 11)
+            {
+                middleBackGround.position += Vector3.right * -11;
+            }
+
+            lastPos = transform.position;
+        }
     }
 }

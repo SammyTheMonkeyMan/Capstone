@@ -11,13 +11,13 @@ public class UIController : MonoBehaviour
     //public Image[] hearts;
     //public Sprite heartEmpty, heartFull, heartHalf;
 
-    //public Text gemText;
+    public Text gemText;
 
     public Image fadeScreen; 
     public float fadeSpeed;
     private bool shouldFadeIn, shouldFadeOut;
 
-    //public GameObject levelCompleteText;
+    public GameObject levelCompleteText;
 
     private void Awake()
     {
@@ -152,8 +152,8 @@ public class UIController : MonoBehaviour
         }
     }*/
 
-    /*public void UpdateGemDisplay()
+    public void UpdateGemDisplay()
     {
         gemText.text = LevelManager.instance.gemsCollected.ToString();
-    }*/
+    }
 }
